@@ -1,6 +1,6 @@
 const vocabLists = {
-    'lesRelationsNouveau': {
-            name: "Les Relations et Les Sentiments (Nouveau)",
+    'lesRelations': {
+            name: "Les Relations et Les Sentiments",
             categories: {
                 les_relations: [
                     { french: "une âme sœur", english: "soul mate" },
@@ -25,10 +25,10 @@ const vocabLists = {
                     { french: "infidèle", english: "unfaithful" }
                 ],
                 les_sentiments: [
-                    { french: "agacer", english: "to annoy" },
-                    { french: "énerver", english: "to annoy" },
+                    { french: "agacer", english: "to annoy (ag)" },
+                    { french: "énerver", english: "to annoy (é)" },
                     { french: "aimer", english: "to love ; to like" },
-                    { french: "avoir honte (de)", english: "to be ashamed of ; embarrassed" },
+                    { french: "avoir honte", english: "to be ashamed of ; embarrassed" },
                     { french: "en avoir marre (de)", english: "to be fed up (with)" },
                     { french: "s'entendre bien (avec)", english: "to get along well (with)" },
                     { french: "gêner", english: "to bother ; embarrass" },

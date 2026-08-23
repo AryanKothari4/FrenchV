@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>French Vocabulary Quiz</title>
     <style>
-        /* CSS FROM style.css */
+        /* CSS */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
         :root {
@@ -22,7 +21,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #302b63 0%, #24243e 100%);
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
             background-attachment: fixed;
             color: #fff;
             padding: 20px;
@@ -49,8 +48,10 @@
         #question-prompt { font-size: 1.2rem; margin-bottom: 10px; font-weight: 300; }
         #question-term { font-size: 2.5rem; margin-bottom: 30px; min-height: 50px; font-weight: 600; }
 
-        .input-group { display: flex; gap: 10px; }
-        #answer-input { flex-grow: 1; }
+        .input-group { display: flex; gap: 10px; width: 100%; }
+        /* min-width: 0 prevents the input from overflowing the flex container on mobile */
+        #answer-input { flex-grow: 1; min-width: 0; } 
+        
         #answer-input, .form-group select { padding: 15px; font-size: 1rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.2); color: #fff; outline: none; transition: all 0.2s ease; font-family: 'Poppins', sans-serif; }
         #answer-input::placeholder { color: rgba(255, 255, 255, 0.6); }
         #answer-input:focus, .form-group select:focus { background: rgba(255, 255, 255, 0.3); border-color: rgba(255, 255, 255, 0.8); }
@@ -58,80 +59,71 @@
 
         .form-group { margin-bottom: 30px; text-align: left; }
         .form-group label { margin-bottom: 5px; font-size: 0.9rem; opacity: 0.8; display: block; }
-        .form-group select { width: 100%; }
-        .form-group select option { background: #3c3782; color: #fff; }
+        .form-group select { width: 100%; cursor: pointer; }
+        .form-group select option { background: #203a43; color: #fff; }
 
-        #category-checkboxes {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 10px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 6px;
-            transition: background 0.2s ease;
-        }
-
+        #category-checkboxes { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; padding: 15px; background: rgba(0, 0, 0, 0.2); border-radius: 8px; max-height: 250px; overflow-y: auto; }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 8px; border-radius: 6px; transition: background 0.2s ease; }
         .checkbox-item:hover { background: rgba(255, 255, 255, 0.1); }
         .checkbox-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #fff; }
         .checkbox-item label { margin: 0; font-size: 1rem; opacity: 1; cursor: pointer; flex-grow: 1; }
 
-        button { padding: 15px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 8px; background: #fff; color: #302b63; cursor: pointer; transition: all 0.2s ease; width: 100%; }
+        button { padding: 15px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 8px; background: #fff; color: #16222A; cursor: pointer; transition: all 0.2s ease; width: 100%; display: flex; justify-content: center; align-items: center; }
         .input-group button { width: auto; }
-        button:hover { background: #f0f0f0; transform: translateY(-2px); }
+        button:hover:not(:disabled) { background: #f0f0f0; transform: translateY(-2px); }
         button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); }
 
-        #hint-button { background: transparent; border: 1px solid rgba(255, 255, 255, 0.6); color: #fff; width: auto; padding: 15px; }
+        #hint-button { background: transparent; border: 1px solid rgba(255, 255, 255, 0.6); color: #fff; width: auto; padding: 15px 20px; }
         #hint-button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
 
-        #accent-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        /* SVG Icon styling */
+        .btn-icon { display: none; width: 22px; height: 22px; stroke: currentColor; }
+
+        #accent-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
         .accent-btn {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.4);
             color: #fff;
             padding: 0;
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             font-size: 1.1rem;
             font-weight: 400;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
             position: relative;
         }
         .accent-btn:hover { background: rgba(255, 255, 255, 0.4); transform: translateY(-1px); }
-        .accent-btn sup { position: absolute; top: 3px; left: 4px; font-size: 0.7rem; opacity: 0.7; }
+        .accent-btn sup { position: absolute; top: 4px; left: 5px; font-size: 0.65rem; opacity: 0.6; }
 
         #feedback-message { min-height: 40px; display: flex; justify-content: center; align-items: center; margin-top: 20px; font-weight: 600; }
         .correct, .incorrect { background-color: rgba(0, 0, 0, 0.6); padding: 5px 15px; border-radius: 8px; animation: fadeIn 0.3s; }
         .correct { color: var(--correct-color); }
         .incorrect { color: var(--incorrect-color); }
-        .hint-message { font-size: 0.9rem; opacity: 0.8; font-weight: 400; }
+        .hint-message { font-size: 0.95rem; opacity: 0.9; font-weight: 400; letter-spacing: 1px; }
+        
         #continue-prompt { display: none; margin-top: 15px; font-size: 0.9rem; opacity: 0.7; animation: fadeIn 0.5s; }
         #quiz-box, #completion-screen { display: none; }
         #completion-screen { flex-direction: column; align-items: center; justify-content: center; }
         #completion-screen h2 { font-size: 2.5rem; margin-bottom: 20px; }
         #final-score { font-size: 1.2rem; margin-bottom: 30px; }
+        
         #review-section { width: 100%; margin-top: 20px; text-align: left; }
         #review-section h3 { text-align: center; margin-bottom: 15px; font-weight: 400; }
-        #wrong-answers-list { list-style-type: none; max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; }
+        #wrong-answers-list { list-style-type: none; max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; }
         #wrong-answers-list li { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 0.95rem; }
         #wrong-answers-list li:last-child { border-bottom: none; }
+        
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        /* Responsive styling for Mobile */
+        @media (max-width: 500px) {
+            .quiz-container { padding: 25px 20px; }
+            .input-group button { padding: 12px 15px; } /* Shrink button padding */
+            .btn-text { display: none; } /* Hide text */
+            .btn-icon { display: block; } /* Show clean SVG icons */
+        }
     </style>
 </head>
 <body>
@@ -164,8 +156,16 @@
         <form id="answer-form">
             <div class="input-group">
                 <input type="text" id="answer-input" placeholder="Type your answer..." autocomplete="off" lang="fr" autofocus spellcheck="false">
-                <button type="button" id="hint-button">Hint</button>
-                <button type="submit" id="check-button">Check</button>
+                
+                <button type="button" id="hint-button">
+                    <span class="btn-text">Hint</span>
+                    <!-- Hint Question Mark Icon -->
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                </button>
+                
+                <button type="submit" id="check-button">
+                    <!-- Text and icons are swapped via JS/CSS depending on state -->
+                </button>
             </div>
             <div id="accent-buttons"></div>
         </form>
@@ -184,12 +184,13 @@
     </div>
 
     <script>
-        /* JS FROM vocab.js */
-        // vocab.js - Contains all vocabulary lists for the quiz.
 
-const vocabLists = {
-    'lesRelationsNouveau': {
-            name: "Les Relations et Les Sentiments (Nouveau)",
+
+
+
+        const vocabLists = {
+    'lesRelations': {
+            name: "Les Relations et Les Sentiments",
             categories: {
                 les_relations: [
                     { french: "une âme sœur", english: "soul mate" },
@@ -214,10 +215,10 @@ const vocabLists = {
                     { french: "infidèle", english: "unfaithful" }
                 ],
                 les_sentiments: [
-                    { french: "agacer", english: "to annoy" },
-                    { french: "énerver", english: "to annoy" },
+                    { french: "agacer", english: "to annoy (ag)" },
+                    { french: "énerver", english: "to annoy (é)" },
                     { french: "aimer", english: "to love ; to like" },
-                    { french: "avoir honte (de)", english: "to be ashamed of ; embarrassed" },
+                    { french: "avoir honte", english: "to be ashamed of ; embarrassed" },
                     { french: "en avoir marre (de)", english: "to be fed up (with)" },
                     { french: "s'entendre bien (avec)", english: "to get along well (with)" },
                     { french: "gêner", english: "to bother ; embarrass" },
@@ -274,9 +275,7 @@ const vocabLists = {
             }
         }
 };
-    
 
-        /* JS FROM script.js */
         const selectionContainer = document.getElementById('selection-container');
         const startQuizForm = document.getElementById('start-quiz-form');
         const vocabListSelect = document.getElementById('vocab-list-select');
@@ -299,6 +298,10 @@ const vocabLists = {
         const wrongAnswersList = document.getElementById('wrong-answers-list');
         const accentButtonsContainer = document.getElementById('accent-buttons');
 
+        // Clean SVGs for dynamic button states
+        const iconCheck = `<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        const iconArrow = `<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
+
         let quizTerms = [], currentTerm = null, totalTermsInQuiz = 0, isWaitingForContinue = false, wronglyAnswered = [];
         let lastWronglyAnswered = [];
         let activeAccents = [];
@@ -311,25 +314,41 @@ const vocabLists = {
 
         function updateCategoryCheckboxes() {
             const selectedListKey = vocabListSelect.value;
+            
+            // Check if there are no lists to prevent errors when vocabLists is empty
+            if (!selectedListKey) {
+                subListSelectorWrapper.style.display = 'none';
+                return;
+            }
+
+            if (selectedListKey === 'review-wrong') {
+                subListSelectorWrapper.style.display = 'none';
+                return;
+            }
+
             const selectedList = vocabLists[selectedListKey];
             categoryCheckboxesContainer.innerHTML = '';
+
             if (selectedList && selectedList.categories) {
                 subListSelectorWrapper.style.display = 'block';
                 const selectAllDiv = document.createElement('div');
                 selectAllDiv.className = 'checkbox-item';
                 selectAllDiv.innerHTML = `<input type="checkbox" id="select-all-checkbox" checked><label for="select-all-checkbox">Select All</label>`;
                 categoryCheckboxesContainer.appendChild(selectAllDiv);
+                
                 const separator = document.createElement('hr');
                 separator.style.border = 'none'; separator.style.borderTop = '1px solid rgba(255, 255, 255, 0.2)'; separator.style.margin = '8px 0';
                 categoryCheckboxesContainer.appendChild(separator);
+                
                 for (const categoryKey in selectedList.categories) {
-                    const categoryName = categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1);
+                    const categoryName = categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1).replace(/_/g, ' ');
                     const termCount = selectedList.categories[categoryKey].length;
                     const checkboxDiv = document.createElement('div');
                     checkboxDiv.className = 'checkbox-item';
                     checkboxDiv.innerHTML = `<input type="checkbox" id="category-${categoryKey}" value="${categoryKey}" class="category-checkbox" checked><label for="category-${categoryKey}">${categoryName} (${termCount})</label>`;
                     categoryCheckboxesContainer.appendChild(checkboxDiv);
                 }
+                
                 document.getElementById('select-all-checkbox').addEventListener('change', handleSelectAllChange);
                 document.querySelectorAll('.category-checkbox').forEach(checkbox => {
                     checkbox.addEventListener('change', handleCategoryCheckboxChange);
@@ -356,10 +375,14 @@ const vocabLists = {
             const allFrenchText = terms.map(term => term.french).join('');
             const accentSet = new Set(allFrenchText.match(/[àâéèêëîïôûüùçœ]/g));
             if (!accentSet || accentSet.size === 0) { activeAccents = []; return; }
+            
             activeAccents = Array.from(accentSet).sort();
             activeAccents.forEach((accent, index) => {
                 const button = document.createElement('button');
-                button.type = 'button'; button.className = 'accent-btn'; button.dataset.char = accent;
+                button.type = 'button'; 
+                button.className = 'accent-btn'; 
+                button.dataset.char = accent;
+                // Display the number shortcut in the corner
                 button.innerHTML = `<sup>${index + 1}</sup> ${accent}`;
                 accentButtonsContainer.appendChild(button);
             });
@@ -380,6 +403,7 @@ const vocabLists = {
         }
 
         function handleAccentShortcut(event) {
+            // Listens to raw numbers 1-9 to insert accents
             const numKey = parseInt(event.key, 10);
             if (!isNaN(numKey) && numKey >= 1 && numKey <= activeAccents.length) {
                 event.preventDefault();
@@ -389,8 +413,16 @@ const vocabLists = {
 
         function handleQuizStart(event) {
             event.preventDefault();
+            
+            // Prevent starting if no lists are loaded
+            if (Object.keys(vocabLists).length === 0) {
+                alert("Please add vocabulary lists to the code first.");
+                return;
+            }
+
             const selectedListKey = vocabListSelect.value;
             let selectedTerms;
+            
             if (selectedListKey === 'review-wrong') {
                 selectedTerms = lastWronglyAnswered;
             } else {
@@ -415,6 +447,7 @@ const vocabLists = {
             totalTermsInQuiz = selectedTerms.length;
             wronglyAnswered = [];
             createAccentButtons(selectedTerms);
+            
             selectionContainer.style.display = 'none';
             completionScreen.style.display = 'none';
             quizBox.style.display = 'block';
@@ -426,26 +459,39 @@ const vocabLists = {
             isWaitingForContinue = false;
             feedbackMessage.innerHTML = '';
             continuePrompt.style.display = 'none';
-            checkButton.textContent = 'Check';
+            
+            // Replaces innerHTML instead of textContent to preserve the icon
+            checkButton.innerHTML = `<span class="btn-text">Check</span>${iconCheck}`;
+            
             answerInput.disabled = false;
             hintButton.disabled = false;
             answerInput.value = '';
+            
             progressCounter.textContent = `${totalTermsInQuiz - quizTerms.length + 1} / ${totalTermsInQuiz}`;
+            
             const randomIndex = Math.floor(Math.random() * quizTerms.length);
             currentTerm = quizTerms[randomIndex];
+            
             questionPrompt.textContent = 'What is the French for...';
             questionTerm.textContent = currentTerm.english;
-            answerInput.focus();
+            
+            setTimeout(() => answerInput.focus(), 10);
         }
 
         function checkAnswer(event) {
             event.preventDefault();
             if (isWaitingForContinue) { nextQuestion(); return; }
+            
             const userAnswer = answerInput.value.trim();
             if (!userAnswer) return;
+            
             const correctAnswer = currentTerm.french;
-            const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
-            if (isCorrect) {
+            
+            // Strict matching: ignore spaces and case ONLY
+            const normalizedUser = userAnswer.replace(/\s+/g, '').toLowerCase();
+            const normalizedCorrect = correctAnswer.replace(/\s+/g, '').toLowerCase();
+            
+            if (normalizedUser === normalizedCorrect) {
                 feedbackMessage.innerHTML = `<span class="correct">Correct!</span>`;
                 quizTerms = quizTerms.filter(term => term.french !== currentTerm.french || term.english !== currentTerm.english);
                 answerInput.disabled = true;
@@ -459,7 +505,9 @@ const vocabLists = {
                 isWaitingForContinue = true;
                 answerInput.disabled = true;
                 hintButton.disabled = true;
-                checkButton.textContent = 'Continue';
+                
+                // Switch to the 'Continue' icon logic
+                checkButton.innerHTML = `<span class="btn-text">Continue</span>${iconArrow}`;
                 continuePrompt.style.display = 'block';
                 checkButton.focus();
             }
@@ -469,7 +517,10 @@ const vocabLists = {
             if (!currentTerm || isWaitingForContinue) return;
             const answer = currentTerm.french;
             const firstLetter = answer.charAt(0);
-            const hint = firstLetter + answer.substring(1).replace(/[^\s]/g, '_');
+            
+            // Only underscores letters; leaves spaces and punctuation alone
+            const hint = firstLetter + answer.substring(1).replace(/[a-zA-ZàâéèêëîïôûüùçœÀÂÉÈÊËÎÏÔÛÜÙÇŒ]/g, '_');
+            
             feedbackMessage.innerHTML = `<span class="hint-message">Hint: Starts with '${firstLetter}'. (${hint})</span>`;
             hintButton.disabled = true;
             answerInput.focus();
@@ -480,8 +531,10 @@ const vocabLists = {
             lastWronglyAnswered = [...wronglyAnswered];
             const score = totalTermsInQuiz - wronglyAnswered.length;
             finalScore.textContent = `You got ${score} / ${totalTermsInQuiz} correct.`;
+            
             const existingReviewOption = document.getElementById('review-option');
             if (existingReviewOption) existingReviewOption.remove();
+            
             if (wronglyAnswered.length > 0) {
                 wrongAnswersList.innerHTML = '';
                 wronglyAnswered.forEach(term => {
@@ -490,6 +543,7 @@ const vocabLists = {
                     wrongAnswersList.appendChild(listItem);
                 });
                 reviewSection.style.display = 'block';
+                
                 const reviewOption = new Option(`Review My ${wronglyAnswered.length} Wrong Answers`, 'review-wrong');
                 reviewOption.id = 'review-option';
                 vocabListSelect.prepend(reviewOption);
@@ -503,11 +557,13 @@ const vocabLists = {
         function resetToSelection() {
             completionScreen.style.display = 'none';
             selectionContainer.style.display = 'block';
+            
             if (lastWronglyAnswered.length > 0 && document.getElementById('review-option')) {
                 vocabListSelect.value = 'review-wrong';
             } else {
                 vocabListSelect.value = Object.keys(vocabLists)[0];
             }
+            
             updateCategoryCheckboxes();
             accentButtonsContainer.innerHTML = '';
             activeAccents = [];
@@ -516,10 +572,12 @@ const vocabLists = {
         document.addEventListener('DOMContentLoaded', () => {
             populateVocabListsDropdown();
             updateCategoryCheckboxes(); 
+            
             startQuizForm.addEventListener('submit', handleQuizStart);
             answerForm.addEventListener('submit', checkAnswer);
             hintButton.addEventListener('click', showHint);
             restartButton.addEventListener('click', resetToSelection);
+            
             accentButtonsContainer.addEventListener('click', handleAccentButtonClick);
             answerInput.addEventListener('keydown', handleAccentShortcut);
             vocabListSelect.addEventListener('change', updateCategoryCheckboxes);
@@ -527,4 +585,3 @@ const vocabLists = {
     </script>
 </body>
 </html>
-
